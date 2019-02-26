@@ -9,6 +9,7 @@ verify_ssl = true
 sanic-graphql = "*"
 sqlalchemy = "*"
 mysqlclient = "*"
+graphene-sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"
