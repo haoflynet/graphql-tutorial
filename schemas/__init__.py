@@ -17,10 +17,10 @@ class PageInfoSchema(ObjectType):
     专用于分页的schema
     """
 
-    total = graphene.Int()
-    current_page = graphene.Int()
-    per_page = graphene.Int()
-    total_pages = graphene.Int()
+    total = graphene.Int(description="总条数")
+    current_page = graphene.Int(description="当前页码")
+    per_page = graphene.Int(description="每页数量")
+    total_pages = graphene.Int(description="总共页码数量")
 
     @staticmethod
     def paginate(total: int, current_page: int, per_page: int):
@@ -67,23 +67,28 @@ def get_dataloaders():
 
 
 class Query(graphene.ObjectType):
-    article = graphene.Field(ArticleSchema, title=graphene.String(description="文章标题"))
+    article = graphene.Field(
+        ArticleSchema, title=graphene.String(description="文章标题"), description="单个查询"
+    )
     articles = graphene.Field(
         "schemas.ArticlePageSchema",
         page=graphene.Int(description="页码数(默认为1)"),
         limit=graphene.Int(description="每页数量(默认为20)"),
+        description="文章列表查询",
     )
     author = graphene.Field(AuthorSchema, title=graphene.String(description="文章标题"))
     authors = graphene.Field(
-        "schemas.AuthorSchema",
+        "schemas.AuthorPageSchema",
         page=graphene.Int(description="页码数(默认为1)"),
         limit=graphene.Int(description="每页数量(默认为20)"),
+        description="作者列表查询",
     )
     comment = graphene.Field(CommentSchema, title=graphene.String(description="文章标题"))
     comments = graphene.Field(
-        "schemas.CommentSchema",
+        "schemas.CommentPageSchema",
         page=graphene.Int(description="页码数(默认为1)"),
         limit=graphene.Int(description="每页数量(默认为20)"),
+        description="评论列表查询",
     )
 
     def resolve_article(self, info, **kwargs):

@@ -115,24 +115,6 @@ add "&raw" to the end of the URL within a browser.
       document.body
     );
     
-    
-    var pretty_tag = document.querySelector("a[title='Prettify Query']");
-    function copyCURL() {
-        document.querySelector('input').value = 'curl -X POST ' + window.location.href.replace('&operationName=null', '').replace(/([\?|=|\(|\)])/g, '\\\$1');
-        document.querySelector('input').select();document.execCommand('Copy');
-    }
-    
-    var input_tag = document.createElement('input');
-    pretty_tag.after(input_tag);
-    input_tag.outerHTML = '<input style="width: 50%;" value="' + window.location.href +'">';
-
-    var curl_button_tag = document.createElement('a');
-    pretty_tag.after(curl_button_tag);
-    curl_button_tag.outerHTML = '<a class="toolbar-button" title="get_curl" onclick="copyCURL();">Copy cURL</a>';
-    
-    var origin_button_tag = document.createElement('a');
-    pretty_tag.after(origin_button_tag);
-    origin_button_tag.outerHTML = '<a class="toolbar-button" title="origin" onclick="document.querySelector(\\'input\\').value = decodeURIComponent(window.location.href).split(\\'query=\\')[1].replace(\\'&operationName=null\\', \\'\\');document.querySelector(\\'input\\').select();document.execCommand(\\'Copy\\');">Copy Origin String</a>';
   </script>
 </body>
 </html>'''

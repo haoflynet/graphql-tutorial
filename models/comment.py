@@ -6,7 +6,7 @@ from db import Base
 class CommentModel(Base):
     __tablename__ = "comments"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, doc="评论ID")
     article_id = Column(Integer, doc="文章ID")
     content = Column(Text, doc="评论内容")
 

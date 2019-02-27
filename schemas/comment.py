@@ -9,7 +9,11 @@ class CommentSchema(SQLAlchemyObjectType):
     class Meta:
         model = CommentModel
         exclude_fields = ("deleted_at",)
+        description = "评论Schema"
 
 
 class CommentPageSchema(PageSchema):
-    datas = graphene.List("schemas.CommentSchema")
+    datas = graphene.List("schemas.CommentSchema", description="评论列表")
+
+    class Meta:
+        description = "评论列表"

@@ -7,11 +7,12 @@ from schemas import PageSchema
 
 class ArticleSchema(SQLAlchemyObjectType):
     author = graphene.Field("schemas.AuthorSchema", description="文章作者信息")
-    comments = graphene.List("schemas.CommentSchema", description="文章评论信息")
+    comments = graphene.List("schemas.CommentSchema", description="文章评论列表")
 
     class Meta:
         model = ArticleModel
         exclude_fields = "deleted_at"
+        description = "文章Schema"
 
     def resolve_author(self, info):
         return (
@@ -33,4 +34,7 @@ class ArticleSchema(SQLAlchemyObjectType):
 
 
 class ArticlePageSchema(PageSchema):
-    datas = graphene.List("schemas.ArticleSchema")
+    datas = graphene.List("schemas.ArticleSchema", description="文章列表")
+
+    class Meta:
+        description = "文章列表"
