@@ -111,6 +111,3 @@ class Query(graphene.ObjectType):
     def resolve_comments(self, info, **kwargs):
         comments, page_info = CommentManager.get_list(_paginated=True, **kwargs)
         return CommentPageSchema(page_info=page_info, datas=comments)
-
-
-Schema = graphene.Schema(query=Query)

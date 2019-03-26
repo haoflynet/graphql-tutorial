@@ -9,8 +9,27 @@ from models import CommentModel
 
 class CommentManager:
     @staticmethod
+    def create_one(article_id, content):
+        comment = CommentModel(article_id=article_id, content=content)
+        DBSession().add(comment)
+        DBSession().flush()
+        return comment
+
+    @staticmethod
+    def update_one(id, content) -> CommentModel:
+        comment = CommentManager.get_one(id=id)
+        comment.content = content
+        DBSession().flush()
+        return comment
+
+    @staticmethod
+    def delete_one(id):
+        DBSession().delete(CommentManager.get_one(id=id))
+        DBSession().flush()
+
+    @staticmethod
     def get_one(**args) -> CommentModel:
-        query = DBSession().query(CommentModel).filter(CommentModel.deleted_at == None)
+        query = DBSession().query(CommentModel)
 
         if "id" in args:
             query = query.filter(CommentModel.id == args["id"])
@@ -22,7 +41,7 @@ class CommentManager:
         page = 1 if "page" not in kwargs else int(kwargs["page"])
         limit = 20 if "limit" not in kwargs else int(kwargs["limit"])
 
-        query = DBSession().query(CommentModel).filter(CommentModel.deleted_at == None)
+        query = DBSession().query(CommentModel)
 
         if "created_at_ge" in kwargs:
             query = query.filter(CommentModel.created_at >= kwargs["created_at_ge"])
@@ -53,10 +72,6 @@ class CommentManager:
 
 class CommentsDataLoader(DataLoader):
     def batch_load_fn(self, ids):
-        query = (
-            DBSession()
-            .query(CommentModel)
-            .filter(CommentModel.id.in_(ids), CommentModel.deleted_at == None)
-        )
+        query = DBSession().query(CommentModel).filter(CommentModel.id.in_(ids))
         articles = dict([(article.id, article) for article in query.all()])
         return Promise.resolve([articles.get(id, None) for id in ids])

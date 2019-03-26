@@ -9,8 +9,27 @@ from models import AuthorModel
 
 class AuthorManager:
     @staticmethod
+    def update_one(author_id, name):
+        author = AuthorManager.get_one(id=author_id)
+        author.name = name
+        DBSession().flush()
+        return author
+
+    @staticmethod
+    def delete_one(author_id):
+        DBSession().delete(AuthorManager.get_one(id=author_id))
+        DBSession().flush()
+
+    @staticmethod
+    def create_one(name):
+        author = AuthorModel(name=name)
+        DBSession().add(author)
+        DBSession().flush()
+        return author
+
+    @staticmethod
     def get_one(**args) -> AuthorModel:
-        query = DBSession().query(AuthorModel).filter(AuthorModel.deleted_at == None)
+        query = DBSession().query(AuthorModel)
 
         if "id" in args:
             query = query.filter(AuthorModel.id == args["id"])
@@ -24,7 +43,7 @@ class AuthorManager:
         page = 1 if "page" not in kwargs else int(kwargs["page"])
         limit = 20 if "limit" not in kwargs else int(kwargs["limit"])
 
-        query = DBSession().query(AuthorModel).filter(AuthorModel.deleted_at == None)
+        query = DBSession().query(AuthorModel)
 
         if "created_at_ge" in kwargs:
             query = query.filter(AuthorModel.created_at >= kwargs["created_at_ge"])
@@ -55,10 +74,6 @@ class AuthorManager:
 
 class AuthorsDataLoader(DataLoader):
     def batch_load_fn(self, ids):
-        query = (
-            DBSession()
-            .query(AuthorModel)
-            .filter(AuthorModel.id.in_(ids), AuthorModel.deleted_at == None)
-        )
+        query = DBSession().query(AuthorModel).filter(AuthorModel.id.in_(ids))
         articles = dict([(article.id, article) for article in query.all()])
         return Promise.resolve([articles.get(id, None) for id in ids])

@@ -9,8 +9,31 @@ from models import ArticleModel, CommentModel
 
 class ArticleManager:
     @staticmethod
+    def update_one(article_id, **args) -> ArticleModel:
+        article = ArticleManager.get_one(article_id=article_id)
+
+        if "content" in args:
+            article.content = args["content"]
+        if "title" in args:
+            article.title = args["title"]
+        DBSession().flush()
+        return article
+
+    @staticmethod
+    def delete_one(article_id):
+        DBSession().delete(ArticleManager.get_one(id=article_id))
+        DBSession().flush()
+
+    @staticmethod
+    def create_one(author_id, content, title) -> ArticleModel:
+        article = ArticleModel(author_id=author_id, content=content, title=title)
+        DBSession().add(article)
+        DBSession().flush()
+        return article
+
+    @staticmethod
     def get_one(**args) -> ArticleModel:
-        query = DBSession().query(ArticleModel).filter(ArticleModel.deleted_at == None)
+        query = DBSession().query(ArticleModel)
 
         if "id" in args:
             query = query.filter(ArticleModel.id == args["id"])
@@ -24,7 +47,7 @@ class ArticleManager:
         page = 1 if "page" not in kwargs else int(kwargs["page"])
         limit = 20 if "limit" not in kwargs else int(kwargs["limit"])
 
-        query = DBSession().query(ArticleModel).filter(ArticleModel.deleted_at == None)
+        query = DBSession().query(ArticleModel)
 
         if "created_at_ge" in kwargs:
             query = query.filter(ArticleModel.created_at >= kwargs["created_at_ge"])
@@ -55,22 +78,14 @@ class ArticleManager:
 
 class ArticlesDataLoader(DataLoader):
     def batch_load_fn(self, ids):
-        query = (
-            DBSession()
-            .query(ArticleModel)
-            .filter(ArticleModel.id.in_(ids), ArticleModel.deleted_at == None)
-        )
+        query = DBSession().query(ArticleModel).filter(ArticleModel.id.in_(ids))
         articles = dict([(article.id, article) for article in query.all()])
         return Promise.resolve([articles.get(id, None) for id in ids])
 
 
 class ArticleCommentsDataLoader(DataLoader):
     def batch_load_fn(self, ids):
-        query = (
-            DBSession()
-            .query(CommentModel)
-            .filter(CommentModel.article_id.in_(ids), CommentModel.deleted_at == None)
-        )
+        query = DBSession().query(CommentModel).filter(CommentModel.article_id.in_(ids))
         article_comments = {}
         for comment in query.all():
             if comment.article_id in article_comments:

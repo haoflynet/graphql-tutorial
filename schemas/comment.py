@@ -8,7 +8,6 @@ from schemas import PageSchema
 class CommentSchema(SQLAlchemyObjectType):
     class Meta:
         model = CommentModel
-        exclude_fields = ("deleted_at",)
         description = "评论Schema"
 
 

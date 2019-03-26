@@ -8,7 +8,6 @@ from schemas import PageSchema
 class AuthorSchema(SQLAlchemyObjectType):
     class Meta:
         model = AuthorModel
-        exclude_fields = ("deleted_at",)
         description = "作者Schema"
 
 

@@ -11,7 +11,6 @@ class ArticleSchema(SQLAlchemyObjectType):
 
     class Meta:
         model = ArticleModel
-        exclude_fields = "deleted_at"
         description = "文章Schema"
 
     def resolve_author(self, info):

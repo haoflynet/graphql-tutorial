@@ -1,5 +1,8 @@
+import graphene
+
 from db import DBSession
-from schemas import Schema, get_dataloaders
+from schemas import get_dataloaders, Query
+from mutations import Mutation
 
 from sanic import Sanic
 from sanic.testing import SanicTestClient
@@ -13,7 +16,7 @@ def create_app(path="/graphql", **kwargs):
     app = Sanic(__name__)
     app.debug = True
 
-    schema = kwargs.pop("schema", None) or Schema
+    schema = graphene.Schema(query=Query, mutation=Mutation)
 
     @app.listener("before_server_start")
     def init_web_route(app, loop):
