@@ -27,5 +27,5 @@ class ProfessionalWritersDataLoader(DataLoader):
         )
         writers = dict([writer.author_id, writer] for writer in query.all())
         return Promise.resolve(
-            [writers.get(str(author_id), None) for author_id in author_ids]
+            [writers.get(author_id, None) for author_id in author_ids]
         )

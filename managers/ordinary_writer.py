@@ -26,5 +26,6 @@ class OrdinaryWritersDataLoader(DataLoader):
             .filter(OrdinaryWriterModel.author_id.in_(author_ids))
         )
         writers = dict([writer.author_id, writer] for writer in query.all())
-        result = [writers.get(str(author_id), None) for author_id in author_ids]
-        return Promise.resolve(result)
+        return Promise.resolve(
+            [writers.get(author_id, None) for author_id in author_ids]
+        )
