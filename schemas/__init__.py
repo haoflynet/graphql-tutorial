@@ -10,6 +10,8 @@ from managers.article import (
 )
 from managers.author import AuthorsDataLoader, AuthorManager
 from managers.comment import CommentsDataLoader, CommentManager
+from managers.ordinary_writer import OrdinaryWritersDataLoader
+from managers.professional_writer import ProfessionalWritersDataLoader
 
 
 class PageInfoSchema(ObjectType):
@@ -45,6 +47,8 @@ class PageSchema(ObjectType):
 from schemas.article import ArticleSchema, ArticlePageSchema
 from schemas.author import AuthorSchema, AuthorPageSchema
 from schemas.comment import CommentSchema, CommentPageSchema
+from schemas.ordinary_writer import OrdinaryWriterSchema
+from schemas.professional_writer import ProfessionalWriterSchema
 
 __all__ = [
     PageInfoSchema.__class__,
@@ -54,6 +58,8 @@ __all__ = [
     AuthorPageSchema.__class__,
     CommentSchema.__class__,
     CommentPageSchema.__class__,
+    OrdinaryWriterSchema.__class__,
+    ProfessionalWriterSchema.__class__,
 ]
 
 
@@ -63,6 +69,8 @@ def get_dataloaders():
         "AuthorsDataLoader": AuthorsDataLoader(cache=False),
         "CommentsDataLoader": CommentsDataLoader(cache=False),
         "ArticleCommentsDataLoader": ArticleCommentsDataLoader(cache=False),
+        "OrdinaryWritersDataLoader": OrdinaryWritersDataLoader(cache=False),
+        "ProfessionalWritersDataLoader": ProfessionalWritersDataLoader(cache=False),
     }
 
 
@@ -111,3 +119,12 @@ class Query(graphene.ObjectType):
     def resolve_comments(self, info, **kwargs):
         comments, page_info = CommentManager.get_list(_paginated=True, **kwargs)
         return CommentPageSchema(page_info=page_info, datas=comments)
+
+
+from mutations import Mutation
+
+schema = graphene.Schema(
+    query=Query,
+    mutation=Mutation,
+    types=[OrdinaryWriterSchema, ProfessionalWriterSchema],
+)
