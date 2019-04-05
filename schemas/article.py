@@ -1,6 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
+from managers.author import AuthorManager
 from models import ArticleModel
 from schemas import PageSchema
 
@@ -14,6 +15,7 @@ class ArticleSchema(SQLAlchemyObjectType):
         description = "文章Schema"
 
     def resolve_author(self, info):
+        # return AuthorManager.get_one(id=self.author_id)
         return (
             info.context.get("AuthorsDataLoader")
             .load(self.author_id)
