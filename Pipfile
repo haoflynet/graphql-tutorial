@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 sanic-graphql = "*"
-sqlalchemy = "*"
+sqlalchemy = ">=1.3.0"
 mysqlclient = "*"
 graphene-sqlalchemy = "*"
 
